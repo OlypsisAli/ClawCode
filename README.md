@@ -14,9 +14,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" />
-  <img src="https://img.shields.io/badge/built_with-Codex_CLI-black" alt="Built with Codex CLI" />
-  <img src="https://img.shields.io/badge/agent-OpenClaw-purple" alt="OpenClaw" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
+  <a href="https://github.com/openai/codex"><img src="https://img.shields.io/badge/built_with-Codex_CLI-black" alt="Built with Codex CLI" /></a>
+  <a href="https://openclaw.com"><img src="https://img.shields.io/badge/agent-OpenClaw-purple" alt="OpenClaw" /></a>
 </p>
 
 ---
