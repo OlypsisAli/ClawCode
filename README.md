@@ -2,13 +2,9 @@
   <h1 align="center">ClawCode</h1>
 </p>
 
-<<<<<<< HEAD
 <p align="center">
-  <strong>A self-contained framework that specs, audits, implements, and ships any feature. Autonomously.</strong>
+  <strong>A self-contained framework that specs, audits, implements, and ships any feature. Autonomously. No Hassle.</strong>
 </p>
-=======
-### A self-contained framework that specs, audits, implements, and ships any feature. Autonomously. No Hassle. 
->>>>>>> 0d47db3546ee86e5705e029442f3917efc9f6d44
 
 <p align="center">
   <a href="#-quickstart">Quickstart</a> &nbsp;·&nbsp;
@@ -51,9 +47,9 @@
 |------|------|---------|
 | **Orchestrator** | [OpenClaw](https://openclaw.com) | Your clawbot — manages phases, carries context, escalates |
 | **Coding agent** | [Codex CLI](https://github.com/openai/codex) | `codex exec` / `exec resume` — does the actual code reading & writing |
-| **Model** | `o3-extra-high` | The model ClawCode was built and tested with |
+| **Model** | Codex 3.6 Extra High | The model ClawCode was built and tested with |
 
-ClawCode was built with OpenClaw + Codex CLI running `o3-extra-high`. This is the intended and tested configuration. The pipeline relies on `codex exec` for autonomous execution, `--output-schema` for structured audit verdicts, and `exec resume` for session continuity across iterations. You *can* adapt it to other agents, but this is the path of least resistance.
+ClawCode was built with OpenClaw + Codex CLI running Codex 3.6 Extra High. This is the intended and tested configuration. The pipeline relies on `codex exec` for autonomous execution, `--output-schema` for structured audit verdicts, and `exec resume` for session continuity across iterations. You *can* adapt it to other agents, but this is the path of least resistance.
 
 ---
 

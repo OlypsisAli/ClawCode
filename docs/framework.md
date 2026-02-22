@@ -238,7 +238,7 @@ Create `pipeline/config.yaml`:
 
 repo_path: /path/to/your/repo                    # Git repo root (absolute path)
 codex_bin: ~/.local/bin/codex                     # Path to coding agent binary
-model: gpt-5.3-codex                             # Model for coding agent sessions
+model: codex-3.6-extra-high                       # Codex 3.6 Extra High (recommended)
 max_spec_iterations: 3                            # Max spec audit rounds before escalate
 max_impl_iterations: 3                            # Max impl audit rounds before escalate
 state_dir: ~/.openclaw/workspace/pipeline/state/
