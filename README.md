@@ -110,7 +110,7 @@ I realized the fix wasn't a better model — it was a better process. Structured
 
 ### Your clawbot = the project manager
 
-Your clawbot (OpenClaw) orchestrates the pipeline. It doesn't write code — it manages phases, launches Codex CLI sessions, parses structured verdicts, extracts issue ledgers, carries context between steps, and escalates when things go wrong. Separate Codex sessions do the actual code reading and writing. This separation prevents the orchestrator from hallucinating code and gives the coding agent full sandbox access.
+Your clawbot (OpenClaw) orchestrates the pipeline. It doesn't write code. It manages phases, launches Codex CLI sessions, parses structured verdicts, extracts issue ledgers, carries context between steps, and escalates when things go wrong. Separate Codex sessions do the actual code reading and writing. This separation prevents the orchestrator from hallucinating code and gives the coding agent full sandbox access.
 
 ### What your clawbot sets up
 
