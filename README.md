@@ -1,6 +1,6 @@
 # ClawCode
 
-### Give your clawbot a codebase. Get back a feature branch.
+### Give your clawbot a working doc. Get back a feature branch.
 
 We've evolved in how we use AI to write software. First it was inline autocomplete. Then copilots. Then autonomous agents. We're now at the point where you should be able to hand an AI a feature description and have it go implement the whole thing. The capability exists — but the process doesn't. Models are smart enough to write the code, but capturing your intent precisely, preventing drift, making sure everything downstream actually works the way you expect — that's not an intelligence problem, that's a *process* problem.
 
