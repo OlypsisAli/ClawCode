@@ -229,7 +229,7 @@ Battle-tested on a real codebase. Save yourself the debugging time.
 
 1. **`exec resume` doesn't support `-o` or `--output-schema`.** Include schemas inline and tell the agent to write files via shell commands. This will bite you first.
 
-2. **Without issue ledgers, audits death-spiral.** The auditor finds new tangential issues every round instead of verifying fixes. The ledger system fixes this. Biggest lesson learned.
+2. **Without issue ledgers and clear pass in prompts, audits death-spiral.** The auditor finds new tangential issues every round instead of verifying fixes. The ledger system and a clear rubic fixes this. Biggest lesson learned.
 
 3. **Always demand the complete updated spec on revisions.** If you say "fix issues," the AI returns a patch. Explicitly demand the full end-to-end spec every time.
 
