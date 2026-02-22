@@ -2,9 +2,13 @@
   <h1 align="center">ClawCode</h1>
 </p>
 
+<<<<<<< HEAD
 <p align="center">
   <strong>A self-contained framework that specs, audits, implements, and ships any feature. Autonomously.</strong>
 </p>
+=======
+### A self-contained framework that specs, audits, implements, and ships any feature. Autonomously. No Hassle. 
+>>>>>>> 0d47db3546ee86e5705e029442f3917efc9f6d44
 
 <p align="center">
   <a href="#-quickstart">Quickstart</a> &nbsp;·&nbsp;
