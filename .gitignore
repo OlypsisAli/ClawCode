@@ -1,0 +1,12 @@
+# Pipeline runtime artifacts (generated per-project, not committed)
+state/
+logs/
+inbox/
+*.jsonl
+
+# OS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/

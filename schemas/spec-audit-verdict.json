@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["IMPLEMENTABLE", "IMPLEMENTABLE_WITH_NOTES", "NOT_IMPLEMENTABLE_YET", "ESCALATE"],
+      "description": "IMPLEMENTABLE: no issues or info-only. IMPLEMENTABLE_WITH_NOTES: minor/info issues logged. NOT_IMPLEMENTABLE_YET: major or critical issues. ESCALATE: auditor unsure or needs human judgment."
+    },
+    "summary": {
+      "type": "string",
+      "description": "One-paragraph summary of spec quality"
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "Stable issue ID, e.g. SPEC-1. Persists across iterations." },
+          "section": { "type": "string" },
+          "severity": { "type": "string", "enum": ["critical", "major", "minor", "info"] },
+          "issue": { "type": "string" },
+          "suggested_fix": { "type": "string" },
+          "status": { "type": "string", "enum": ["new", "unresolved", "resolved"], "description": "For re-audits: resolved/unresolved/new." }
+        },
+        "required": ["id", "section", "severity", "issue", "suggested_fix", "status"],
+        "additionalProperties": false
+      }
+    },
+    "blocker_count": {
+      "type": "integer",
+      "description": "Count of critical + major issues. If 0, spec is implementable."
+    }
+  },
+  "required": ["verdict", "summary", "issues", "blocker_count"],
+  "additionalProperties": false
+}

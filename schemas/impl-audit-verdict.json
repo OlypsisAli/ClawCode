@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["COMPLIANT", "COMPLIANT_WITH_NOTES", "NOT_COMPLIANT", "ESCALATE"],
+      "description": "COMPLIANT: no issues or info-only. COMPLIANT_WITH_NOTES: minor/info logged. NOT_COMPLIANT: major or critical. ESCALATE: needs human judgment."
+    },
+    "summary": { "type": "string" },
+    "compliance_issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "Stable ID, e.g. IMPL-C1. Persists across iterations." },
+          "spec_section": { "type": "string" },
+          "severity": { "type": "string", "enum": ["critical", "major", "minor", "info"] },
+          "issue": { "type": "string" },
+          "file": { "type": "string" },
+          "fix": { "type": "string" },
+          "status": { "type": "string", "enum": ["new", "unresolved", "resolved"] }
+        },
+        "required": ["id", "spec_section", "severity", "issue", "file", "fix", "status"],
+        "additionalProperties": false
+      }
+    },
+    "bugs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "Stable ID, e.g. IMPL-B1. Persists across iterations." },
+          "severity": { "type": "string", "enum": ["critical", "major", "minor", "info"] },
+          "file": { "type": "string" },
+          "line_range": { "type": "string" },
+          "description": { "type": "string" },
+          "fix": { "type": "string" },
+          "status": { "type": "string", "enum": ["new", "unresolved", "resolved"] }
+        },
+        "required": ["id", "severity", "file", "line_range", "description", "fix", "status"],
+        "additionalProperties": false
+      }
+    },
+    "blocker_count": {
+      "type": "integer",
+      "description": "Count of critical + major issues/bugs. If 0, implementation is compliant."
+    }
+  },
+  "required": ["verdict", "summary", "compliance_issues", "bugs", "blocker_count"],
+  "additionalProperties": false
+}
