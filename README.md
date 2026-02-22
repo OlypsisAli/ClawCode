@@ -2,52 +2,77 @@
 
 ### Give your clawbot a codebase. Get back a feature branch.
 
-ClawCode is an autonomous code implementation framework built for AI agents. You write a plain-English feature description, hand it to your clawbot, and it handles everything — spec generation, spec auditing, implementation, code auditing, bug fixing, and shipping a clean feature branch. You review and merge.
+We've evolved in how we use AI to write software. First it was inline autocomplete. Then copilots. Then autonomous agents. We're now at the point where you should be able to hand an AI a feature description and have it go implement the whole thing. The capability exists — but the process doesn't. Models are smart enough to write the code, but capturing your intent precisely, preventing drift, making sure everything downstream actually works the way you expect — that's not an intelligence problem, that's a *process* problem.
+
+ClawCode is a framework that wraps every step of feature implementation in structured prompts, audits, and convergence loops. You write a plain-English working doc. Your clawbot orchestrates the rest — spec generation, spec auditing, implementation, code auditing, and shipping a clean feature branch. You review and merge.
 
 No SDK. No install. No dependencies. It's a single document your clawbot reads and executes.
 
 ```
-You write a Working Doc (plain English)
-        |
-  [1] Setup ──────────── branch created, state initialized
-        |
-  [2] Spec Gen ───────── clawbot reads codebase + working doc, produces implementation spec
-        |
-  [3] Spec Audit Loop ── separate session audits the spec (up to N rounds, fixes between each)
-        |
-  [4] Implementation ─── clawbot implements the spec (writes actual code)
-        |
-  [4.5] Build Verify ─── run build + lint, fix if broken
-        |
-  [5] Code Audit Loop ── separate session audits the code (up to N rounds, fixes between each)
-        |
-  [6] Finalize ───────── git commit, push, summary report
-        |
-  You review the feature branch and merge
+  You write a Working Doc (plain English)
+          |
+    [1] Setup ──────────── branch created, state initialized
+          |
+    [2] Spec Gen ───────── reads codebase + working doc, produces implementation spec
+          |
+    [3] Spec Audit Loop ── audits the spec (up to N rounds, fixes between each)
+          |
+    [4] Implementation ─── implements the spec (writes actual code)
+          |
+    [4.5] Build Verify ─── run build + lint, fix if broken
+          |
+    [5] Code Audit Loop ── audits the code (up to N rounds, fixes between each)
+          |
+    [6] Finalize ───────── git commit, push, summary report
+          |
+    You review the feature branch and merge
 ```
 
 ---
 
-## Quickstart
+## 🚀 Quickstart
 
 ```
-1. Clone this repo
-2. Open docs/framework.md
-3. Give it to your clawbot
-4. Say: "Read this. Set up the pipeline for my project."
-5. Write a working doc describing what you want built
-6. Say: "Run the pipeline on this working doc: [path]"
-7. Go do something else
-8. Come back to a feature branch ready for review
+1.  Clone this repo
+2.  Open docs/framework.md
+3.  Give it to your clawbot
+4.  Say: "Read this. Set up the pipeline for my project."
+5.  Write a working doc describing what you want built
+6.  Say: "Run the pipeline on this working doc: [path]"
+7.  Go do something else
+8.  Come back to a feature branch ready for review
 ```
 
 That's it. The framework doc is self-contained — your clawbot reads it, sets up the directory structure, customizes the config, and runs the pipeline. The prompt files, schemas, and templates in this repo are pre-extracted for convenience, but they're all inside the framework doc too.
 
+> **Note:** ClawCode was built and optimized for [Codex CLI](https://github.com/openai/codex) as the coding agent. It works best with Codex because the pipeline relies on `codex exec` for autonomous execution, `--output-schema` for structured verdicts, and `exec resume` for session continuity across audit iterations. You can adapt it to other coding agents (Claude Code, Aider, etc.) but Codex is the path of least resistance.
+
 ---
 
-## Why I built this
+## 🧠 The bigger picture
 
-I was shipping features on a complex codebase using AI agents and kept hitting the same walls:
+The way we build software with AI has gone through phases:
+
+**Phase 1: Autocomplete.** AI suggests the next line. You accept or reject. It's a typing accelerator.
+
+**Phase 2: Copilot.** AI writes functions, fills in blocks, answers questions inline. You're still driving — it's riding shotgun.
+
+**Phase 3: Autonomous agents.** AI reads your codebase, writes code, runs commands. You describe what you want and it goes and builds it.
+
+We're solidly in Phase 3 now. The models are capable enough. But there's a gap between "AI can write code" and "AI can ship a production feature" — and it's not about model intelligence. It's about process:
+
+- How do you capture intent precisely enough that the AI doesn't reinterpret it?
+- How do you make sure the spec actually covers edge cases and matches your data contracts before a single line is written?
+- How do you audit the implementation without the audit loop spiraling into new tangential issues every round?
+- How do you recover when the AI's context resets mid-implementation?
+
+ClawCode is my answer. Structured prompts at every step. Machine-parseable audits with convergence guarantees. Disk-based state that survives anything. The AI does the work — the framework makes sure the work is right.
+
+---
+
+## 💥 Why I built this
+
+I was shipping features on a complex codebase with AI agents and kept hitting the same walls:
 
 **Spec drift** — you ask for one thing, the AI builds three things and "improves" your architecture along the way.
 
@@ -59,20 +84,48 @@ I was shipping features on a complex codebase using AI agents and kept hitting t
 
 **Zero paper trail** — nothing is tracked. No artifacts are saved. When something goes wrong you're debugging blind.
 
-ClawCode fixes all of these with three core ideas:
-
-### 1. Separation of orchestrator and coder
-Your clawbot is the **project manager**, not the coder. It manages phases, tracks state, parses verdicts, and escalates. A separate coding agent session does the actual code reading and writing. This prevents the orchestrator from hallucinating code and gives the coding agent full sandbox access.
-
-### 2. Issue ledger convergence
-This is the big one. After every audit, issues are extracted into a ledger with stable IDs. The ledger gets fed to both the fix step (fix *exactly these issues*, nothing more) and the re-audit step (verify *these specific issues*, no expanding scope). Re-audits mark each issue as `resolved`, `unresolved`, or `new` — and `new` only counts if the fix *introduced* it. No scope creep. No tangents. The loop converges.
-
-### 3. Disk-based state that survives everything
-`state.json` tracks phase, thread IDs, iteration counts, verdicts, and a `resume_hint` — a one-sentence orientation for the next session. If your clawbot's context resets mid-pipeline (compaction, sleep, crash), the next session reads the state file and picks up exactly where it left off. Heartbeat recovery handles this automatically.
+I realized the fix wasn't a better model — it was a better process. Structured prompts and a framework around each step of implementation. ClawCode is that framework, standardized and open-sourced.
 
 ---
 
-## What's in this repo
+## ⚙️ How it works
+
+### Your clawbot = the project manager
+
+Your clawbot orchestrates the pipeline. It doesn't write code — it manages phases, launches Codex CLI sessions, parses structured verdicts, extracts issue ledgers, carries context between steps, and escalates when things go wrong. A separate Codex session does the actual code reading and writing. This separation prevents the orchestrator from hallucinating code and gives the coding agent full sandbox access.
+
+### The pipeline
+
+**Phase 1-2: Spec generation.** Codex reads your codebase + working doc and produces an implementation spec. The spec prompt structurally constrains every common LLM failure mode — drift, incompleteness, pattern invention, missing error handling.
+
+**Phase 3: Spec audit loop.** A *separate* Codex session audits the spec against the working doc and actual codebase. Produces a structured JSON verdict: `IMPLEMENTABLE`, `NOT_IMPLEMENTABLE_YET`, or `ESCALATE`. If not implementable, your clawbot extracts the issue ledger, feeds it to the spec writer for targeted fixes, then re-audits. Up to N iterations, converging via the ledger system.
+
+**Phase 4-4.5: Implementation + build verification.** Codex implements the spec end-to-end. Build and lint run automatically. If they fail, the agent gets the errors and fixes them.
+
+**Phase 5: Code audit loop.** Another separate session audits the actual implementation against the spec. Same convergence system — structured verdicts, issue ledgers, targeted fixes, re-audits. Catches spec deviations, bugs, missing edge cases, security issues.
+
+**Phase 6: Finalize.** Commit, push, generate summary report, notify you. You review the branch and merge.
+
+### Issue ledger convergence
+
+This is the core innovation — the thing that makes the audit loops actually work.
+
+Without ledgers, auditors find new tangential issues every iteration and the loop never converges (death spiral). With ledgers:
+- After each audit, issues are extracted into a plain-text ledger with stable IDs
+- The ledger is fed to the fix step — fix *exactly these issues*, nothing more
+- The ledger is fed to the re-audit step — verify *these specific issues*, don't expand scope
+- Re-audit marks each as `resolved`, `unresolved`, or `new`
+- `new` only counts if the fix *introduced* it — no scope creep, no tangents
+
+The loop converges because both sides are constrained to the same issue set.
+
+### Recovery
+
+Everything is on disk. `state.json` tracks phase, thread IDs, iteration counts, verdicts, and a `resume_hint` — a one-sentence orientation for the next session. If your clawbot's context resets at any point (compaction, sleep, crash), the next session reads the state file and picks up exactly where it left off. Wire it into your clawbot's heartbeat and recovery is automatic.
+
+---
+
+## 📦 What's in this repo
 
 ```
 clawcode/
@@ -85,7 +138,7 @@ clawcode/
 │   ├── prompt0-working-doc.md         # Interactive working doc creation helper
 │   ├── prompt1-spec-writer.md         # Spec generation prompt
 │   ├── prompt2-spec-auditor.md        # Spec audit prompt
-│   ├── prompt3-post-audit.md          # Implementation audit prompt
+│   ├── prompt3-post-audit.md         # Implementation audit prompt
 │   └── implementation-primer.md       # Implementation constraints & safeguards
 ├── schemas/
 │   ├── spec-audit-verdict.json        # Structured output: spec verdicts
@@ -99,44 +152,17 @@ clawcode/
 
 ---
 
-## How it works
+## 🔧 What you need
 
-### The working doc (your input)
-A plain-English description of what you want built. The more specific you are about *what* to build, *what NOT to change*, and *edge cases*, the better the output. See `examples/working-doc-example.md` for format.
-
-There's also an optional interactive helper (`prompts/prompt0-working-doc.md`) — give it to a coding agent and it'll walk you through creating a solid working doc with codebase discovery, impact analysis, and design decisions.
-
-### The pipeline (what your clawbot runs)
-
-**Phase 1-2: Spec generation.** A coding agent reads your codebase + working doc and produces an implementation spec. The spec prompt structurally prevents every common LLM failure mode — drift, incompleteness, pattern invention, missing error handling.
-
-**Phase 3: Spec audit loop.** A *separate* coding agent session audits the spec against the working doc and actual codebase. Produces a structured JSON verdict: `IMPLEMENTABLE`, `NOT_IMPLEMENTABLE_YET`, or `ESCALATE`. If not implementable, your clawbot extracts the issue ledger, feeds it to the spec writer for targeted fixes, then re-audits. Up to N iterations, converging via the ledger system.
-
-**Phase 4-4.5: Implementation + build verification.** A coding agent implements the spec. Build and lint run automatically. If they fail, the agent gets the errors and fixes them.
-
-**Phase 5: Code audit loop.** Another separate session audits the actual implementation against the spec. Same convergence system — structured verdicts, issue ledgers, targeted fixes, re-audits. Catches spec deviations, bugs, missing edge cases, security issues.
-
-**Phase 6: Finalize.** Commit, push, generate summary report, notify you. You review the branch and merge.
-
-### The verdict system
-Audits produce machine-parseable JSON with severity tiers (`critical` / `major` / `minor` / `info`). Only critical and major block the pipeline. Each issue gets a stable ID that persists across re-audits, enabling convergence tracking. When max iterations are hit: `blocker_count = 0` auto-promotes, `blocker_count > 0` escalates to you.
-
-### Recovery
-Everything is on disk. If your clawbot's context resets at any point, the next session reads `state.json`, checks the `resume_hint`, and resumes from exactly where it left off. Wire it into your clawbot's heartbeat and recovery is automatic.
-
----
-
-## What you need
-
-- **A clawbot** — any persistent AI agent that can run shell commands (OpenClaw, or your preferred orchestrator)
-- **A coding agent CLI** — [Codex CLI](https://github.com/openai/codex), [Claude Code](https://github.com/anthropics/claude-code), [Aider](https://github.com/paul-gauthier/aider), or anything with autonomous mode + repo access + structured output
+- A **clawbot** — any persistent AI agent that can run shell commands (OpenClaw, or your preferred orchestrator)
+- **[Codex CLI](https://github.com/openai/codex)** (recommended) — the coding agent that does the actual work. The pipeline is built around `codex exec`, `--output-schema`, and `exec resume`
 - **Git** + **jq** + your project's build toolchain
 
-Built with OpenClaw + Codex CLI, but the framework is **agent-agnostic**. The pipeline logic works with any orchestrator + any coding agent that supports: (1) autonomous execution, (2) read/write repo access, (3) structured JSON output, and (4) session resume.
+> The framework is agent-agnostic at the architecture level — you *can* swap Codex for [Claude Code](https://github.com/anthropics/claude-code), [Aider](https://github.com/paul-gauthier/aider), or anything with autonomous mode + structured output + session resume. But it works best with Codex CLI out of the box.
 
 ---
 
-## Adapt it to your stack
+## 🔀 Adapt it to your stack
 
 The pipeline is language-agnostic and project-agnostic. What you customize:
 
@@ -148,7 +174,7 @@ The pipeline is language-agnostic and project-agnostic. What you customize:
 | Coding agent CLI commands | Shell commands in `docs/framework.md` Section 7 |
 
 Works with Node, Python, Rust, Go, Java — anything with a build step. The core architecture is universal:
-- Phase-gate pipeline (spec → audit → implement → audit → ship)
+- Phase-gate pipeline (spec -> audit -> implement -> audit -> ship)
 - Issue ledger convergence (the death spiral fix)
 - Structured verdict schemas with severity gating
 - Disk-based state management
@@ -156,7 +182,7 @@ Works with Node, Python, Rust, Go, Java — anything with a build step. The core
 
 ---
 
-## Lessons from production
+## 🩹 Lessons from production
 
 Battle-tested on a real codebase. Save yourself the debugging time.
 
@@ -178,7 +204,7 @@ Battle-tested on a real codebase. Save yourself the debugging time.
 
 Built by [@OlypsisAli](https://github.com/OlypsisAli) while shipping features on [Thesis](https://thesis.so), Feb 2026.
 
-Born out of frustration with the gap between "AI can write code" and "AI can ship production features." ClawCode is the bridge.
+Born out of the gap between "AI can write code" and "AI can ship production features." ClawCode is the bridge.
 
 ---
 
