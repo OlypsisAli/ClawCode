@@ -16,7 +16,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
   <a href="https://github.com/openai/codex"><img src="https://img.shields.io/badge/built_with-Codex_CLI-black" alt="Built with Codex CLI" /></a>
-  <a href="https://openclaw.com"><img src="https://img.shields.io/badge/agent-OpenClaw-purple" alt="OpenClaw" /></a>
+  <a href="https://github.com/openclaw/openclaw"><img src="https://img.shields.io/badge/agent-OpenClaw-purple" alt="OpenClaw" /></a>
 </p>
 
 ---
@@ -59,7 +59,7 @@
 
 | Role | Tool | Details |
 |------|------|---------|
-| **Orchestrator** | [OpenClaw](https://openclaw.com) | Your clawbot — manages phases, carries context, escalates |
+| **Orchestrator** | [OpenClaw](https://github.com/openclaw/openclaw) | Your clawbot — manages phases, carries context, escalates |
 | **Coding agent** | [Codex CLI](https://github.com/openai/codex) | `codex exec` / `exec resume` — does the actual code reading & writing |
 | **Model** | Codex 3.6 Extra High | The model ClawCode was built and tested with |
 
