@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>Hand this to your clawbot. It specs, audits, implements, and ships any feature. Autonomously. No Hassle.</strong>
+  <strong>A framework that you can hand to your clawbot that allows it to spec, audit, implement, and ship any feature. Autonomously. No Hassle.</strong>
 </p>
 
 <p align="center">
