@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>A self-contained framework that specs, audits, implements, and ships any feature. Autonomously. No Hassle.</strong>
+  <strong>Hand this to your clawbot. It specs, audits, implements, and ships any feature. Autonomously. No Hassle.</strong>
 </p>
 
 <p align="center">
