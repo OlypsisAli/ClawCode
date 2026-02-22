@@ -1,6 +1,6 @@
 # ClawCode
 
-### Give your clawbot a codebase. Get back a feature branch.
+### Give your clawbot a working doc. Get back a feature branch.
 
 ClawCode is an autonomous code implementation framework built for AI agents. You write a plain-English feature description, hand it to your clawbot, and it handles everything — spec generation, spec auditing, implementation, code auditing, bug fixing, and shipping a clean feature branch. You review and merge.
 
