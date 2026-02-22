@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>Hand this to your clawbot. It specs, audits, implements, and ships any feature. Autonomously. No Hassle.</strong>
+  <strong>A framework you hand to your clawbot that allows it to spec, audit, implement, and ship any feature. Autonomously. No Hassle.</strong>
 </p>
 
 <p align="center">
@@ -26,6 +26,20 @@
 > *"Read `docs/framework.md`. Set up the implementation pipeline for my project at `[your-repo-path]`."*
 >
 > Your clawbot reads the framework, creates the directory structure, generates the config, and is ready to run. No install. No SDK. No dependencies.
+
+```
+  You write a working doc
+         ↓
+  ┌─────────────────────────────────────────────────────────┐
+  │  ClawCode Pipeline (your clawbot runs this)             │
+  │                                                         │
+  │  Spec Gen → Spec Audit Loop → Implement → Code Audit   │
+  │     ↑            ↕                            ↕         │
+  │  codebase    fix ↔ re-audit              fix ↔ re-audit │
+  └─────────────────────────────────────────────────────────┘
+         ↓
+  Feature branch ready for review
+```
 
 ---
 
