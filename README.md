@@ -21,7 +21,7 @@
 
 ---
 
-> **Zero setup.** Point your [OpenClaw](https://openclaw.com) bot at this repo and tell it:
+> **Zero setup.** Point your [OpenClaw](https://github.com/openclaw/openclaw) bot at this repo and tell it:
 >
 > *"Read `docs/framework.md`. Set up the implementation pipeline for my project at `[your-repo-path]`."*
 >
