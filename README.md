@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>A framework you hand to your clawbot that allows it to spec, audit, implement, and ship any feature. Autonomously. No Hassle.</strong>
+  <strong>A framework you hand to your clawbot that allows it to spec, audit, implement, and ship any feature via orchestrating Codex CLI instances. Autonomously. No Hassle.</strong>
 </p>
 
 <p align="center">
