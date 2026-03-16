@@ -3,13 +3,13 @@
 </p>
 
 <p align="center">
-  <strong>A framework you hand to your clawbot that allows it to spec, audit, implement, and ship any feature via orchestrating Codex CLI instances. Autonomously. No Hassle.</strong>
+  <strong>A framework you hand to your clawbot so it can spec, audit, implement, and ship features by orchestrating Codex CLI sessions end-to-end.</strong>
 </p>
 
 <p align="center">
   <a href="#-quickstart">Quickstart</a> &nbsp;·&nbsp;
   <a href="#-how-it-works">How it works</a> &nbsp;·&nbsp;
-  <a href="#-the-bigger-picture">Why it exists</a> &nbsp;·&nbsp;
+  <a href="#-lessons-from-production">Lessons from production</a> &nbsp;·&nbsp;
   <a href="docs/framework.md">Full framework doc</a>
 </p>
 
@@ -21,22 +21,22 @@
 
 ---
 
-> **Zero setup.** Point your [OpenClaw](https://github.com/openclaw/openclaw) bot at this repo and tell it:
+> **Framework, not hosted runtime.** Point your [OpenClaw](https://github.com/openclaw/openclaw) bot at this repo and tell it:
 >
 > *"Read `docs/framework.md`. Set up the implementation pipeline for my project at `[your-repo-path]`."*
 >
-> Your clawbot reads the framework, creates the directory structure, generates the config, and is ready to run. No install. No SDK. No dependencies.
+> ClawCode provides the runbook, prompts, schemas, and templates. You still need Git, jq, Codex CLI, and your project's normal toolchain installed locally.
 
 ```
   You write a working doc
          ↓
-  ┌─────────────────────────────────────────────────────────┐
-  │  ClawCode Pipeline (your clawbot runs this)             │
-  │                                                         │
-  │  Spec Gen → Spec Audit Loop → Implement → Code Audit   │
-  │     ↑            ↕                            ↕         │
-  │  codebase    fix ↔ re-audit              fix ↔ re-audit │
-  └─────────────────────────────────────────────────────────┘
+  ┌──────────────────────────────────────────────────────────────┐
+  │  ClawCode Pipeline (your clawbot runs this)                  │
+  │                                                              │
+  │  Setup → Spec Gen → Spec Audit → Implement → Code Audit     │
+  │    ↓         ↕              ↕                 ↕              │
+  │ worktree   fix ↔ re-audit  build/lint      fix ↔ re-audit    │
+  └──────────────────────────────────────────────────────────────┘
          ↓
   Feature branch ready for review
 ```
@@ -46,131 +46,82 @@
 ## 🚀 Quickstart
 
 ```
-1.  Point your OpenClaw bot to this repo
-2.  Tell it: "Read docs/framework.md. Set up the implementation pipeline for my project."
-3.  Your clawbot sets up the pipeline automatically (directories, config, prompts, schemas)
-4.  Write a working doc describing the feature you want built
-5.  Tell it: "Run the pipeline on this working doc: [path]"
-6.  Go do something else
-7.  Come back to a feature branch ready for review
+1.  Install or verify Git, jq, Codex CLI, and your repo's build toolchain
+2.  Point your OpenClaw bot to this repo
+3.  Tell it: "Read docs/framework.md. Set up the implementation pipeline for my project."
+4.  Let it generate the pipeline directory, config, prompts, schemas, and runbook
+5.  Write a working doc describing the feature you want built
+6.  Tell it: "Run the pipeline on this working doc: [path]"
+7.  Review the resulting feature branch
 ```
 
 ### Recommended stack
 
 | Role | Tool | Details |
 |------|------|---------|
-| **Orchestrator** | [OpenClaw](https://github.com/openclaw/openclaw) | Your clawbot — manages phases, carries context, escalates |
-| **Coding agent** | [Codex CLI](https://github.com/openai/codex) | `codex exec` / `exec resume` — does the actual code reading & writing |
-| **Model** | Codex 3.6 Extra High | The model ClawCode was built and tested with |
+| **Orchestrator** | [OpenClaw](https://github.com/openclaw/openclaw) | Manages phases, state, notifications, and escalation |
+| **Coding agent** | [Codex CLI](https://github.com/openai/codex) | `codex exec` for fresh phases, `codex exec resume` for iterative audit/fix turns |
+| **Model guidance** | `gpt-5.3-codex` as the stable baseline, `gpt-5.4` only if it proves reliable in your environment | Verify availability with a smoke test before every run; model support depends on your Codex auth flow and CLI version |
 
-ClawCode was built with OpenClaw + Codex CLI running Codex 3.6 Extra High. This is the intended and tested configuration. The pipeline relies on `codex exec` for autonomous execution, `--output-schema` for structured audit verdicts, and `exec resume` for session continuity across iterations. You *can* adapt it to other agents, but this is the path of least resistance.
-
----
-
-## 🧠 The bigger picture
-
-The way we build software with AI has gone through phases:
-
-**Phase 1: Autocomplete.** AI suggests the next line. You accept or reject. It's a typing accelerator.
-
-**Phase 2: Copilot.** AI writes functions, fills in blocks, answers questions inline. You're still driving — it's riding shotgun.
-
-**Phase 3: Autonomous agents.** AI reads your codebase, writes code, runs commands. You describe what you want and it goes and builds it.
-
-We're solidly in Phase 3 now. The models are capable enough. But there's a gap between "AI can write code" and "AI can ship a production feature" — and it's not about model intelligence. It's about process:
-
-- How do you capture intent precisely enough that the AI doesn't reinterpret it?
-- How do you make sure the spec actually covers edge cases and matches your data contracts before a single line is written?
-- How do you audit the implementation without the audit loop spiraling into new tangential issues every round?
-- How do you recover when the AI's context resets mid-implementation?
-
-ClawCode is my answer. Structured prompts at every step. Machine-parseable audits with convergence guarantees. Disk-based state that survives anything. The AI does the work — the framework makes sure the work is right.
-
----
-
-## 💥 Why I built this
-
-I was shipping features on a complex codebase with AI agents and kept hitting the same walls:
-
-**Spec drift** — you ask for one thing, the AI builds three things and "improves" your architecture along the way.
-
-**The 80% problem** — implementation looks done until you notice the stubs, the TODOs, the empty error handlers, the missing edge cases.
-
-**Audit death spirals** — you ask the AI to review its own work. It finds issues. You fix them. It finds *different* issues. You fix those. It finds *new* issues. The loop never converges. You've been going in circles for an hour.
-
-**Context amnesia** — the AI forgets what it was doing mid-implementation. Starts over. Makes different decisions the second time. Nothing is consistent.
-
-**Zero paper trail** — nothing is tracked. No artifacts are saved. When something goes wrong you're debugging blind.
-
-I realized the fix wasn't a better model — it was a better process. Structured prompts and a framework around each step of implementation. ClawCode is that framework, standardized and open-sourced.
+Current ClawCode guidance is built around modern Codex CLI behavior, not the old `codex-3.6-extra-high` era. In production, the most reliable path has been: keep Codex CLI updated, run the pipeline in an isolated worktree, extend stream retry/idle settings in `~/.codex/config.toml`, prefer `gpt-5.3-codex` for long pipeline runs, and treat `exec resume` as a continuity tool for iterative audits rather than a drop-in replacement for fresh `exec`.
 
 ---
 
 ## ⚙️ How it works
 
-### Your clawbot = the project manager
+### Your clawbot is the orchestrator
 
-Your clawbot (OpenClaw) orchestrates the pipeline. It doesn't write code. It manages phases, launches Codex CLI sessions, parses structured verdicts, extracts issue ledgers, carries context between steps, and escalates when things go wrong. Separate Codex sessions do the actual code reading and writing. This separation prevents the orchestrator from hallucinating code and gives the coding agent full sandbox access.
+OpenClaw handles phase transitions, launches Codex CLI sessions, tracks `state.json`, extracts issue ledgers, and escalates when the pipeline gets stuck. Separate Codex sessions do the actual code reading and writing. That separation is intentional: the orchestrator manages process; the coding agent manages code.
 
-### What your clawbot sets up
+### The pipeline runs in a dedicated worktree
 
-When you point your clawbot at `docs/framework.md`, it reads Section 4 (Step-by-Step Setup Checklist) and executes it automatically:
-
-1. **Verifies prerequisites** — Git, jq, Codex CLI installed and authenticated
-2. **Creates the pipeline directory** — `prompts/`, `schemas/`, `state/`, `logs/`, `inbox/`
-3. **Generates `config.yaml`** — fills in your repo path, build commands, branch strategy, model
-4. **Copies prompt and schema files** into place
-5. **Generates `PIPELINE-SPEC.md`** — the operational runbook with your actual paths filled in
-6. **Wires into its own memory** — adds pipeline awareness to AGENTS.md and heartbeat recovery to HEARTBEAT.md
-
-After setup, your clawbot knows how to run the pipeline on any working doc you give it. It also knows how to resume a stalled pipeline after a context reset (via the heartbeat recovery system).
+The production pattern is to create `.worktrees/pipeline` in Phase 1, run every Codex/build/lint command there, and remove it in Phase 6. That keeps the user's main checkout clean while still sharing the same Git object store and feature branch history.
 
 ### The pipeline
 
 ```
   Working Doc (you write this)
           |
-    [1] Setup ──────────── branch created, state.json initialized
+    [1] Setup ──────────── feature branch, .worktrees/pipeline, state.json
           |
     [2] Spec Gen ───────── Codex reads codebase + working doc → implementation spec
           |
-    [3] Spec Audit Loop ── Codex audits spec → verdict → fix → re-audit (up to N rounds)
+    [3] Spec Audit Loop ── audit → issue ledger → revise → re-audit
           |
-    [4] Implementation ─── Codex implements the spec → actual code
+    [4] Implementation ─── Codex implements the spec in the worktree
           |
-    [4.5] Build Verify ─── build + lint → fix if broken
+    [4.5] Build Verify ─── run install/build/lint/test commands as configured
           |
-    [5] Code Audit Loop ── Codex audits code → verdict → fix → re-audit (up to N rounds)
+    [5] Code Audit Loop ── audit code → issue ledger → fix → re-audit
           |
-    [6] Finalize ───────── commit, push, summary → you review and merge
+    [6] Finalize ───────── summary, push feature branch, clean up worktree
 ```
 
-**Phase 1-2: Spec generation.** Codex reads your codebase + working doc and produces an implementation spec. The spec prompt structurally constrains every common LLM failure mode — drift, incompleteness, pattern invention, missing error handling.
+### Why the audit loops converge
 
-**Phase 3: Spec audit loop.** A *separate* Codex session audits the spec against the working doc and actual codebase. Produces a structured JSON verdict: `IMPLEMENTABLE`, `NOT_IMPLEMENTABLE_YET`, or `ESCALATE`. If not implementable, your clawbot extracts the issue ledger, feeds it to the spec writer for targeted fixes, then re-audits. Up to N iterations, converging via the ledger system.
+ClawCode keeps the issue-ledger system, `blocker_count`, and `WITH_NOTES` auto-promotion logic intact:
 
-**Phase 4-4.5: Implementation + build verification.** Codex implements the spec end-to-end. Build and lint run automatically. If they fail, the agent gets the errors and fixes them.
+- Each audit produces a stable issue ledger with IDs.
+- Fix rounds are constrained to those issues only.
+- Re-audits verify the same ledger and only admit truly new issues introduced by the fix.
+- If max iterations are reached with `blocker_count = 0`, the pipeline auto-promotes to `IMPLEMENTABLE_WITH_NOTES` or `COMPLIANT_WITH_NOTES` and proceeds.
 
-**Phase 5: Code audit loop.** Another separate session audits the actual implementation against the spec. Same convergence system — structured verdicts, issue ledgers, targeted fixes, re-audits. Catches spec deviations, bugs, missing edge cases, security issues.
+### Recovery is on disk
 
-**Phase 6: Finalize.** Commit, push, generate summary report, notify you. You review the branch and merge.
+`state.json` tracks phase, thread IDs, iteration counts, verdicts, `resume_hint`, and `worktree_path`. If OpenClaw resets, the next session can read state, inspect artifacts, and resume with the right strategy instead of guessing.
 
-### 🔑 Issue ledger convergence
+---
 
-This is the core innovation — the thing that makes the audit loops actually work.
+## 🧠 Why this exists
 
-Without ledgers, auditors find new tangential issues every iteration and the loop never converges (death spiral). With ledgers:
-- After each audit, issues are extracted into a plain-text ledger with stable IDs
-- The ledger is fed to the fix step — fix *exactly these issues*, nothing more
-- The ledger is fed to the re-audit step — verify *these specific issues*, don't expand scope
-- Re-audit marks each as `resolved`, `unresolved`, or `new`
-- `new` only counts if the fix *introduced* it — no scope creep, no tangents
+The hard part of autonomous software delivery is not getting a model to emit code. The hard part is getting repeatable, reviewable, production-safe behavior:
 
-The loop converges because both sides are constrained to the same issue set.
+- Specs drift unless prompts and audits are structured.
+- Code audits sprawl unless issue scope is locked down.
+- Long reasoning turns stall unless Codex CLI and stream settings are current.
+- Recovery falls apart unless the pipeline writes state to disk and treats every phase as resumable.
 
-### 💾 Recovery
-
-Everything is on disk. `state.json` tracks phase, thread IDs, iteration counts, verdicts, and a `resume_hint` — a one-sentence orientation for the next session. If your clawbot's context resets at any point (compaction, sleep, crash), the next session reads the state file and picks up exactly where it left off. Wire it into your clawbot's heartbeat and recovery is automatic.
+ClawCode standardizes those controls so your clawbot can run a real implementation pipeline instead of a one-shot code generation prompt.
 
 ---
 
@@ -178,74 +129,39 @@ Everything is on disk. `state.json` tracks phase, thread IDs, iteration counts, 
 
 ```
 clawcode/
-├── README.md                          # You're here
+├── README.md
 ├── docs/
-│   └── framework.md                   # THE FILE — your clawbot reads this to bootstrap everything
-│                                      #   Complete, self-contained, 2000+ lines
-│                                      #   Setup checklist, phase commands, prompts, schemas — all in one
+│   └── framework.md
 ├── prompts/
-│   ├── prompt0-working-doc.md         # Interactive working doc creation helper
-│   ├── prompt1-spec-writer.md         # Spec generation prompt
-│   ├── prompt2-spec-auditor.md        # Spec audit prompt
-│   ├── prompt3-post-audit.md          # Implementation audit prompt
-│   └── implementation-primer.md       # Implementation constraints & safeguards
+│   ├── prompt0-working-doc.md
+│   ├── prompt1-spec-writer.md
+│   ├── prompt2-spec-auditor.md
+│   ├── prompt3-post-audit.md
+│   └── implementation-primer.md
 ├── schemas/
-│   ├── spec-audit-verdict.json        # Structured output: spec verdicts
-│   └── impl-audit-verdict.json        # Structured output: code verdicts
+│   ├── spec-audit-verdict.json
+│   └── impl-audit-verdict.json
 ├── templates/
-│   ├── config.yaml                    # Pipeline configuration template
-│   └── PIPELINE-SPEC.md              # Operational runbook template
+│   ├── config.yaml
+│   └── PIPELINE-SPEC.md
 └── examples/
-    └── working-doc-example.md         # Example working doc input
+    └── working-doc-example.md
 ```
 
-> **Note:** The prompt files, schemas, and templates are pre-extracted for reference. But `docs/framework.md` contains everything — your clawbot only needs that one file to set up and run the entire pipeline.
-
----
-
-## 🔀 Adapt it to your stack
-
-The pipeline is language-agnostic and project-agnostic. What you customize:
-
-| What | Where |
-|------|-------|
-| Build/lint/test commands | `templates/config.yaml` |
-| Base branch, branch prefix | `templates/config.yaml` |
-| Sandbox restrictions, env quirks | `prompts/implementation-primer.md` |
-| Coding agent CLI commands | Shell commands in `docs/framework.md` Section 7 |
-
-Works with Node, Python, Rust, Go, Java — anything with a build step. The core architecture is universal:
-- Phase-gate pipeline (spec → audit → implement → audit → ship)
-- Issue ledger convergence (the death spiral fix)
-- Structured verdict schemas with severity gating
-- Disk-based state management
-- Heartbeat recovery
+`docs/framework.md` is the canonical setup and operations document. The prompt, schema, and template files are the extracted versions your clawbot copies into its own pipeline directory.
 
 ---
 
 ## 🩹 Lessons from production
 
-Battle-tested on a real codebase. Save yourself the debugging time.
-
-1. **`exec resume` doesn't support `-o` or `--output-schema`.** Include schemas inline and tell the agent to write files via shell commands. This will bite you first.
-
-2. **Without issue ledgers and clear pass in prompts, audits death-spiral.** The auditor finds new tangential issues every round instead of verifying fixes. The ledger system and a clear rubic fixes this. Biggest lesson learned.
-
-3. **Always demand the complete updated spec on revisions.** If you say "fix issues," the AI returns a patch. Explicitly demand the full end-to-end spec every time.
-
-4. **Codify your environment constraints.** If port binding is blocked or certain commands fail in your sandbox, put it in `implementation-primer.md`. Otherwise the coding agent discovers it the hard way — wasting an entire iteration.
-
-5. **State is king.** If it's not in `state.json`, it didn't happen. Your future self (after a context reset) depends entirely on what's on disk.
-
-6. **First run will have issues.** That's expected. Update your primer and runbook after each run. It gets better fast.
-
----
-
-## Origin
-
-Built by [@OlypsisAli](https://github.com/OlypsisAli) while shipping features on [Thesis](https://thesis.so), Feb 2026.
-
-Born out of the gap between "AI can write code" and "AI can ship production features." ClawCode is the bridge.
+1. **Check Codex CLI before every run.** Stale CLI versions and stale `~/.local/bin/codex` symlinks caused repeated stalls in production.
+2. **Tune `~/.codex/config.toml` for long reasoning.** `stream_max_retries`, `stream_idle_timeout_ms`, `request_max_retries`, and `model_context_window` matter.
+3. **Use an isolated worktree.** `.worktrees/pipeline` keeps the main checkout untouched and avoids unnecessary Git friction inside agent turns.
+4. **Use fresh `exec` and `resume` for different jobs.** Fresh `exec` is for new phases and stall recovery; `resume` is for iterative audits and targeted fix turns that need thread continuity.
+5. **`exec resume` has sharp edges.** It does not support `-o` or `--output-schema`, so re-audits must inline schemas and instruct Codex to write files itself.
+6. **Issue ledgers stop audit death spirals.** Without them, every re-audit expands scope and never converges.
+7. **`state.json` must be explicit.** If `worktree_path`, verdicts, and `resume_hint` are missing, recovery becomes guesswork.
+8. **Milestone notifications should be proactive.** Send them as soon as the phase changes; do not bury them in heartbeat responses.
 
 ---
 

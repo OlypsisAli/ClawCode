@@ -1,19 +1,45 @@
 # Code Pipeline — Configuration
-# Replace ALL paths with your actual values before using.
+# Replace every placeholder before using this in a real pipeline.
+#
+# Pair this file with ~/.codex/config.toml guidance from docs/framework.md:
+# - stream_max_retries = 10
+# - stream_idle_timeout_ms = 1200000
+# - request_max_retries = 6
+# - model_context_window = <full window for your chosen model>
 
-repo_path: /path/to/your/repo                    # Git repo root (absolute path)
-codex_bin: ~/.local/bin/codex                     # Path to coding agent binary (codex, claude, aider, etc.)
-model: codex-3.6-extra-high                       # Codex 3.6 Extra High (recommended)
-max_spec_iterations: 3                            # Max spec audit rounds before escalate
-max_impl_iterations: 3                            # Max impl audit rounds before escalate
-state_dir: ~/.openclaw/workspace/pipeline/state/
-prompts_dir: ~/.openclaw/workspace/pipeline/prompts/
-schemas_dir: ~/.openclaw/workspace/pipeline/schemas/
-logs_dir: ~/.openclaw/workspace/pipeline/logs/
-inbox_dir: ~/.openclaw/workspace/pipeline/inbox/
-notification_channel: webchat                     # webchat | discord | telegram | signal | slack
-base_branch: staging                              # Branch that features are based off
-branch_prefix: feature/                           # Prefix for feature branches
-build_command: "npm run build"                    # Your project's build command
-lint_command: "npm run lint"                      # Your project's lint command
-test_command: "npm test"                          # Your project's test command (optional)
+# Recommended production default: start with gpt-5.3-codex for long runs.
+# Treat gpt-5.4 as an alternate only if it proves stable in your environment.
+
+pipeline_dir: /path/to/your/pipeline
+repo_path: /path/to/your/repo
+worktree_path: /path/to/your/repo/.worktrees/pipeline
+
+codex_bin: ~/.local/bin/codex
+codex_min_version: 0.114.0
+codex_config_path: ~/.codex/config.toml
+
+model: gpt-5.3-codex            # Proven stable baseline for long pipeline runs
+model_reasoning_effort: xhigh
+model_fallback: gpt-5.4         # Optional alternate to try only if it proves stable in your environment
+
+max_spec_iterations: 3
+max_impl_iterations: 3
+
+state_dir: /path/to/your/pipeline/state
+prompts_dir: /path/to/your/pipeline/prompts
+schemas_dir: /path/to/your/pipeline/schemas
+logs_dir: /path/to/your/pipeline/logs
+inbox_dir: /path/to/your/pipeline/inbox
+
+notification_channel: webchat   # webchat | discord | telegram | signal | slack
+base_branch: staging
+branch_prefix: feature/
+
+install_command: "npm install"  # Dependency/bootstrap command run after worktree creation
+build_command: "npm run build"
+lint_command: "npm run lint"
+test_command: "npm test"
+
+env_sync_notes: >
+  Optional: symlink or copy any required untracked env/config files into the worktree
+  during Phase 1. Document the exact commands in PIPELINE-SPEC.md and implementation-primer.md.
