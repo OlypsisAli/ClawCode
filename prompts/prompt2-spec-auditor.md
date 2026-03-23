@@ -61,6 +61,10 @@ Flag every instance where an implementing LLM would have to guess:
 ### Phase 3: Scorecard
 Score every item PASS / PARTIAL / FAIL:
 
+Items are split into two tiers. **Blocking** items gate the verdict — a PARTIAL or FAIL on any blocking item means NOT_IMPLEMENTABLE_YET. **Advisory** items inform quality but do not block — a PARTIAL or FAIL is logged as a minor/info issue.
+
+#### Blocking Items (any PARTIAL/FAIL -> NOT_IMPLEMENTABLE_YET)
+
 | # | Category | Check | Grade | Justification | Required Fix |
 |---|----------|-------|-------|---------------|-------------|
 | 1 | Faithfulness | Spec implements exactly what the working doc describes | | | |
@@ -68,21 +72,27 @@ Score every item PASS / PARTIAL / FAIL:
 | 3 | Contracts | Every DB change has full runnable SQL with comments | | | |
 | 4 | Completeness | Every step has concrete "done when" assertion | | | |
 | 5 | Completeness | Every file in patch list has specific changes listed | | | |
+| 11 | Minimalism | No feature flags, no old/new paths, no unnecessary files | | | |
+| 12 | Scope Boundary | Explicit in/out of scope | | | |
+
+#### Advisory Items (PARTIAL/FAIL logged as minor issues, do not block verdict)
+
+| # | Category | Check | Grade | Justification | Notes |
+|---|----------|-------|-------|---------------|-------|
 | 6 | Existing Patterns | At least one pattern reference per major component | | | |
 | 7 | Negative Constraints | Section 0 has feature-specific "do NOT" list | | | |
 | 8 | Code Quality | All new names explicitly specified | | | |
 | 9 | Code Quality | Comment requirements stated per function | | | |
 | 10 | Verification | Each step has testable verification | | | |
-| 11 | Minimalism | No feature flags, no old/new paths, no unnecessary files | | | |
-| 12 | Scope Boundary | Explicit in/out of scope | | | |
 | 13 | Current State | Exact existing files/functions identified with paths | | | |
 | 14 | Before -> After | Behavior changes shown concretely | | | |
 | 15 | Testing | Test scenarios with exact inputs and expected outputs | | | |
 | 16 | Testing | Tests cover happy path, empty, error, and boundary | | | |
 
 **Grading:**
-- 16/16 PASS -> IMPLEMENTABLE
-- Any PARTIAL or FAIL -> NOT IMPLEMENTABLE YET
+- All Blocking items PASS, all Advisory PASS -> IMPLEMENTABLE
+- All Blocking items PASS, any Advisory PARTIAL/FAIL -> IMPLEMENTABLE_WITH_NOTES (advisory gaps logged as minor issues)
+- Any Blocking item PARTIAL or FAIL -> NOT_IMPLEMENTABLE_YET (with targeted fix per item)
 
 ### Phase 4: Risk Analysis
 Top risks if implemented as-is, each with a specific spec edit to mitigate.

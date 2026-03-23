@@ -127,7 +127,11 @@ For each implementation step:
 
 ---
 
-## Scorecard (Must be 16/16 to pass)
+## Scorecard
+
+Items are split into two tiers. **Blocking** items must all PASS for the spec to be implementable. **Advisory** items improve quality but do not block — gaps are logged as notes.
+
+### Blocking Items (must all PASS)
 
 | # | Category | Check |
 |---|----------|-------|
@@ -136,13 +140,18 @@ For each implementation step:
 | 3 | Contracts | Every DB change has full SQL with comments |
 | 4 | Completeness | Every step has a concrete "done when" assertion |
 | 5 | Completeness | Every file in patch list has specific changes listed |
+| 11 | Minimalism | No feature flags, no old/new paths, no unnecessary files |
+| 12 | Scope Boundary | Explicit in/out of scope |
+
+### Advisory Items (improve quality, do not block)
+
+| # | Category | Check |
+|---|----------|-------|
 | 6 | Existing Patterns | At least one pattern reference per major component |
 | 7 | Negative Constraints | Section 0 includes feature-specific "do NOT" list |
 | 8 | Code Quality | All new names explicitly specified |
 | 9 | Code Quality | Comment requirements specified per function |
 | 10 | Verification | Each step has testable verification |
-| 11 | Minimalism | No feature flags, no old/new paths, no unnecessary files |
-| 12 | Scope Boundary | Explicit in/out of scope |
 | 13 | Current State | Exact existing files/functions identified |
 | 14 | Before -> After | Behavior changes shown concretely |
 | 15 | Testing | Test scenarios with exact inputs/outputs |

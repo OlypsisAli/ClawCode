@@ -553,7 +553,8 @@ Iteration 1:
 
 ```bash
 cd "$WORKTREE_PATH"
-DIFF=$(git diff "$BASE_BRANCH"..HEAD)
+DIFF_STAT=$(git diff --stat "$BASE_BRANCH"..HEAD)
+FILES_CHANGED=$(git diff --name-only "$BASE_BRANCH"..HEAD)
 
 POSTAUDIT_LOG="$STATE_DIR/$SLUG/post-audit-1.jsonl"
 
@@ -570,11 +571,17 @@ POSTAUDIT_LOG="$STATE_DIR/$SLUG/post-audit-1.jsonl"
 ## SPEC
 $(cat "$STATE_DIR/$SLUG/spec.md")
 ---
-## IMPLEMENTATION (Git Diff)
-$DIFF
+## IMPLEMENTATION SUMMARY
+The following files were changed by this implementation:
+
+$DIFF_STAT
+
+Files changed:
+$FILES_CHANGED
 ---
 
 Audit this implementation against the spec.
+IMPORTANT: Do NOT rely on a diff summary alone. For each changed file listed above, read the actual source file from the working tree to see its full current state. Compare each file against the spec requirements.
 Assign stable compliance and bug IDs." \
   | tee "$POSTAUDIT_LOG"
 ```
